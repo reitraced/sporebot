@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 from SporeAPICoreUtils import *
+import fnmatch
+import os
 
 p = '--'
 client = commands.Bot(command_prefix=p)
@@ -37,8 +39,14 @@ async def ping(ctx):
 async def profile(ctx, arg=None):
     if arg:
         buddies = str(len(GetBuddiesForUser(arg)))
+        creations = str(len(GetAssetIdsForUser(arg)))
         profileurl = "https://www.spore.com/view/myspore/" + arg
-        GetProfileForUser(arg)
+#        try:
+#            GetProfileForUser(arg)
+#        except:
+#            blankimage = "http://www.spore.com/static/war/images/global/avatar_none.png"
+#            ext = blankimage[0].split(".")
+#            FetchAndSave(blankimage[0], username + "." + ext[len(ext) - 1] )
         url = ProfileForUserURL(arg)
         myxml = GetXMLForREST(url)
         if(myxml):
@@ -47,15 +55,25 @@ async def profile(ctx, arg=None):
                 tagline = brackettagline[1:-1]
             except:
                 tagline = " "
-        file = discord.File("Downloads/" + arg + ".jpg", filename=arg + ".jpg")
-        embed = discord.Embed(
-            title=arg,
-            description=tagline,
-            url=profileurl
-        )
-        embed.set_thumbnail(url="attachment://" + arg + ".jpg")
-        embed.set_footer(text="This user has " + buddies + " buddy(ies)")
-        await ctx.send(file=file, embed=embed)
+        
+            try:
+                listimage = TryGetNodeValues(myxml, "image")
+                image = listimage[0]
+            except:
+                blankimage = "http://www.spore.com/static/war/images/global/avatar_none.png"
+                image = blankimage
+        else:
+            tagline = "This account does not exist"
+            buddies = "0"
+            creations = "0"
+            image = "http://www.spore.com/static/war/images/global/avatar_none.png"
+        embed = discord.Embed(title=arg, url=profileurl)
+        embed.add_field(name="Tagline", value=tagline)
+        embed.set_thumbnail(url=image)
+        embed.add_field(name="Buddies", value="This player currently has " + buddies + " buddy(ies)")
+        embed.add_field(name="Creations", value="This player has made " + creations + " creations")
+        embed.set_footer(text="Thank you Maxis for this amazing API and game!")
+        await ctx.send(embed=embed)
     else:
         await ctx.send("Please provide a Spore screen name")
 
