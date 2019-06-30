@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from SporeAPICoreUtils import *
 
-p = 'e!'
+p = '--'
 client = commands.Bot(command_prefix=p)
 
 f = open('token.txt', 'r')
