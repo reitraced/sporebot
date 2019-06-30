@@ -35,18 +35,23 @@ async def ping(ctx):
 
 @client.command(brief="displays profile information about user")
 async def profile(ctx, *, arg):
+    profileurl = "https://www.spore.com/view/myspore/" + arg
     GetProfileForUser(arg)
     url = ProfileForUserURL(arg)
     myxml = GetXMLForREST(url)
     if(myxml):
-        tagline = str(TryGetNodeValues(myxml, "tagline"))
-        
+        brackettagline = str(TryGetNodeValues(myxml, "tagline"))
+        if brackettagline == None:
+            tagline = "no tagline :("
+        else:
+            tagline = brackettagline[1:-1]
     file = discord.File("Downloads/" + arg + ".jpg", filename=arg + ".jpg")
     embed = discord.Embed(
         title=arg,
-        description=tagline
+        description=tagline,
+        url=profileurl
     )
-    embed.set_image(url="attachment://" + arg + ".jpg")
+    embed.set_thumbnail(url="attachment://" + arg + ".jpg")
     await ctx.send(file=file, embed=embed)
 
 client.run(token)
