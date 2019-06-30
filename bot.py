@@ -34,24 +34,29 @@ async def ping(ctx):
 
 
 @client.command(brief="displays profile information about user")
-async def profile(ctx, *, arg):
-    profileurl = "https://www.spore.com/view/myspore/" + arg
-    GetProfileForUser(arg)
-    url = ProfileForUserURL(arg)
-    myxml = GetXMLForREST(url)
-    if(myxml):
-        try:
-            brackettagline = str(TryGetNodeValues(myxml, "tagline"))
-            tagline = brackettagline[1:-1]
-        except:
-            tagline = "Change your tag line!"
-    file = discord.File("Downloads/" + arg + ".jpg", filename=arg + ".jpg")
-    embed = discord.Embed(
-        title=arg,
-        description=tagline,
-        url=profileurl
-    )
-    embed.set_thumbnail(url="attachment://" + arg + ".jpg")
-    await ctx.send(file=file, embed=embed)
+async def profile(ctx, arg=None):
+    if arg:
+        buddies = str(len(GetBuddiesForUser(arg)))
+        profileurl = "https://www.spore.com/view/myspore/" + arg
+        GetProfileForUser(arg)
+        url = ProfileForUserURL(arg)
+        myxml = GetXMLForREST(url)
+        if(myxml):
+            try:
+                brackettagline = str(TryGetNodeValues(myxml, "tagline"))
+                tagline = brackettagline[1:-1]
+            except:
+                tagline = "Change your tag line!"
+        file = discord.File("Downloads/" + arg + ".jpg", filename=arg + ".jpg")
+        embed = discord.Embed(
+            title=arg,
+            description=tagline,
+            url=profileurl
+        )
+        embed.set_thumbnail(url="attachment://" + arg + ".jpg")
+        embed.set_footer(text="This user has " + buddies + " buddy(ies)")
+        await ctx.send(file=file, embed=embed)
+    else:
+        await ctx.send("Please provide a Spore screen name")
 
 client.run(token)
