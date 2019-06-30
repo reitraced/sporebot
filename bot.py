@@ -46,7 +46,7 @@ async def profile(ctx, arg=None):
                 brackettagline = str(TryGetNodeValues(myxml, "tagline"))
                 tagline = brackettagline[1:-1]
             except:
-                tagline = "Change your tag line!"
+                tagline = " "
         file = discord.File("Downloads/" + arg + ".jpg", filename=arg + ".jpg")
         embed = discord.Embed(
             title=arg,
