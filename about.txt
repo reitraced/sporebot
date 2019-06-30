@@ -1,0 +1,1 @@
+This is a simple Discord bot meant to work with the API for the game Spore by Maxis
