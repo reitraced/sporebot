@@ -69,8 +69,7 @@ async def profile(ctx, arg=None):
                 creations = "0"
                 image = "http://www.spore.com/static/war/images/global/avatar_none.png"
 
-        embed = discord.Embed(title=arg, url=profileurl)
-        embed.add_field(name="Tagline", value=tagline)
+        embed = discord.Embed(title=arg, description=tagline, url=profileurl)
         embed.set_thumbnail(url=image)
         embed.add_field(
             name="Buddies", value="This player currently has " + buddies + " buddy(ies)")
