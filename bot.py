@@ -129,7 +129,7 @@ async def users(ctx):
     if(myxml):
         total = TryGetNodeValues(myxml, "totalUsers")[0]
         daily = TryGetNodeValues(myxml, "dayUsers")[0]
-        await ctx.send("There are currently " + total + " players registered on Spore, and " + daily + " log ins today!")
+        await ctx.send("There are currently " + total + " players registered on Spore, and " + daily + " registered today!")
     else:
         await ctx.send("There was a problem connecting to Spore servers. Please try again later.")
 
