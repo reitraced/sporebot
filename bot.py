@@ -84,4 +84,53 @@ async def profile(ctx, arg=None):
     else:
         await ctx.send("Please provide a Spore screen name")
 
+@client.command()
+async def info(ctx, arg=None):
+    if arg:
+        desc = GetDescriptionForAsset(arg)[0]
+        tags = str(GetTagsForAsset(arg))[1:-1]
+        image = AssetURL(arg)
+        assetinfo = InfoForAssetURL(arg)
+        myxml = GetXMLForREST(assetinfo)
+        if(myxml):
+            try:
+                name = TryGetNodeValues(myxml, "name")[0]
+                author = TryGetNodeValues(myxml, "author")[0]
+            except:
+                name = "no name, wow congrats you glitched the system"
+
+        embed = discord.Embed(title=name, description=desc)
+        embed.set_thumbnail(url=image)
+        embed.add_field(name="Tags", value=tags)
+        embed.add_field(name="Author", value=author)
+        await ctx.send(embed=embed)
+    
+    if not arg:
+        await ctx.send("Please provide a Spore Asset ID as an argument, to get an Asset ID please follow this guide: https://gist.github.com/reitraced/c7202576cc33fe4df12fb16888d3508d.")
+            
+
+@client.command()
+async def stats(ctx):
+    url = "http://www.spore.com/rest/stats"
+    myxml = GetXMLForREST(url)
+    num = []
+    if(myxml):
+        total = TryGetNodeValues(myxml, "totalUploads")[0]
+        daily = TryGetNodeValues(myxml, "dayUploads")[0]
+        await ctx.send("There are currently " + total + " creations on Spore, of which " + daily + " were made today!")
+    else:
+        await ctx.send("There was a problem connecting to Spore servers. Please try again later.")
+
+@client.command()
+async def users(ctx):
+    url = "http://www.spore.com/rest/stats"
+    myxml = GetXMLForREST(url)
+    num = []
+    if(myxml):
+        total = TryGetNodeValues(myxml, "totalUsers")[0]
+        daily = TryGetNodeValues(myxml, "dayUsers")[0]
+        await ctx.send("There are currently " + total + " players registered on Spore, and " + daily + " log ins today!")
+    else:
+        await ctx.send("There was a problem connecting to Spore servers. Please try again later.")
+
 client.run(token)
