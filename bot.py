@@ -56,18 +56,20 @@ async def profile(ctx, arg=None):
             except:
                 tagline = " "
 
-            try:
-                listimage = TryGetNodeValues(myxml, "image")
-                image = listimage[0]
-            except:
+            if not TryGetNodeValues(myxml, "image") == ['http://www.spore.com/static/null']:
+                try:
+                    listimage = TryGetNodeValues(myxml, "image")
+                    image = listimage[0]
+                except:
+                    blankimage = "http://www.spore.com/static/war/images/global/avatar_none.png"
+                    image = blankimage
+
+            else:
                 blankimage = "http://www.spore.com/static/war/images/global/avatar_none.png"
                 image = blankimage
-
-            if TryGetNodeValues(myxml, "status") == ['0']:
-                tagline = "User not found"
+                tagline = "Player not found"
                 buddies = "0"
                 creations = "0"
-                image = "http://www.spore.com/static/war/images/global/avatar_none.png"
 
         embed = discord.Embed(title=arg, description=tagline, url=profileurl)
         embed.set_thumbnail(url=image)
